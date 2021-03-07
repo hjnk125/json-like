@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="index.css" />
+  <title>json-like-editor</title>
+</head>
+
+<body>
+  <div class="App">
+    <div class="half-container">
+      <div>
+        <input type="radio" id="json-like" name="radio1" value="json-like" onclick={radioHandler(this.value)} checked />
+        <label htmlFor="json-like">JSON-like</label>
+        <input type="radio" id="json" name="radio1" value="json" onclick={radioHandler(this.value)} />
+        <label htmlFor="json">JSON</label>
+      </div>
+      <textarea id="leftSide"></textarea>
+    </div>
+
+    <div class="buttons">
+      convert
+      <button onclick={makeUl()}>→</button>
+      <button>←</button>
+    </div>
+
+    <div class="half-container">
+      <span>editor </span>
+      <button>Expand All</button>
+      <button>Collapse All</button>
+
+      <div id="rightSide">
+
+      </div>
+    </div>
+  </div>
+  <script src='index.js'></script>
+</body>
+
+</html>
