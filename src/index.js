@@ -1,4 +1,7 @@
 const Example = `{
+  ""Example"": ""이곳에 객체를 입력해주세요.📢"",
+
+  
   ""id"": ""12a4-2b4c-34d6-45ef"",
   ""name"": ""정독왕"",
   ""age"": 24,
@@ -19,6 +22,11 @@ const Example = `{
       ""content"": ""참을 수 없는 존재의 가벼움은 니체의 영원 회귀 사상을 바탕으로 한 번인 동시에 아무것도 아닌 삶의 무의미함을 말한다.""
   }]
 }`;
+
+window.addEventListener("error", handleError, true);
+function handleError(event) {
+  alert("JSON-like 입력값이 올바른지 확인해주세요!");
+}
 
 let leftSide = document.querySelector('#leftSide');
 function onchangeLeft(val) {
@@ -46,53 +54,47 @@ let rightSide = document.querySelector('#rightSide');
 function makeUl() {
   let string = leftSide.value.replace(/""/g, '"');
   let parse = JSON.parse(string);
-
   // console.log(parse);
 
   let ul = document.createElement('ul');
-  function innerFn(parse) {
-    if (typeof parse === 'object') {
-      for (let key in parse) {
-        let li = document.createElement('li');
-        li.setAttribute("contentEditable", true);
+  function makeLi(parse) {
+    for (let key in parse) {
+      let li = document.createElement('li');
+      li.setAttribute("contentEditable", true);
 
-        if (typeof parse[key] === 'object') {
-          li.innerHTML = `<strong>${key}</strong>`;
-          let innerUl = document.createElement('ul');
+      if (typeof parse[key] === 'object') {
+        li.innerHTML = `<strong>${key}</strong>`;
+        let innerUl = document.createElement('ul');
 
-          // 반복되는 부분 함수로 리팩토링 필요!
-          for (let k in parse[key]) {
+        // 하위 단계 체크 함수
+        innerFn(parse[key], innerUl);
+        function innerFn(obj, ul) {
+          for (let k in obj) {
             let innerLi = document.createElement('li');
 
-            if (typeof parse[key][k] === 'object') {
+            if (typeof obj[k] === 'object') {
               innerLi.innerHTML = `<strong>${k}</strong>`
               let innerUl2 = document.createElement('ul');
 
-              for (let k2 in parse[key][k]) {
-                let innerLi2 = document.createElement('li');
-                innerLi2.innerHTML = `<strong>${k2}</strong> <span>${parse[key][k][k2]}<span>`
-                innerUl2.appendChild(innerLi2);
-              }
+              innerFn(obj[k], innerUl2);
               innerLi.appendChild(innerUl2);
 
             } else {
-              innerLi.innerHTML = `<strong>${k}</strong> <span>${parse[key][k]}<span>`
+              innerLi.innerHTML = `<strong>${k}</strong> <span>${obj[k]}<span>`
             }
-            innerUl.appendChild(innerLi);
+            ul.appendChild(innerLi);
           }
-          li.appendChild(innerUl);
+          li.appendChild(ul);
         }
 
-        else {
-          li.innerHTML = `<strong>${key}</strong> <span>${parse[key]}<span>`;
-        }
-
-
-        ul.appendChild(li);
+      } else {
+        li.innerHTML = `<strong>${key}</strong> <span>${parse[key]}<span>`;
       }
+
+      ul.appendChild(li);
     }
   }
-  innerFn(parse);
+  makeLi(parse);
 
   rightSide.innerHTML = '';
   rightSide.appendChild(ul);
