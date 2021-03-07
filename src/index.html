@@ -18,19 +18,19 @@
         <input type="radio" id="json" name="radio1" value="json" onclick={radioHandler(this.value)} />
         <label htmlFor="json">JSON</label>
       </div>
-      <textarea id="leftSide"></textarea>
+      <textarea name="text" id="leftSide" onchange={onchangeLeft(this.value)}></textarea>
     </div>
 
     <div class="buttons">
       convert
       <button onclick={makeUl()}>→</button>
-      <button>←</button>
+      <button onclick={editJson()}>←</button>
     </div>
 
     <div class="half-container">
       <span>editor </span>
-      <button>Expand All</button>
-      <button>Collapse All</button>
+      <!-- <button>Expand All</button>
+      <button>Collapse All</button> -->
 
       <div id="rightSide">
 

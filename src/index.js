@@ -21,26 +21,33 @@ const Example = `{
 }`;
 
 let leftSide = document.querySelector('#leftSide');
-leftSide.innerHTML = Example;
+function onchangeLeft(val) {
+  if (leftSide.value !== '') {
+    leftSide.value = val;
+  } else {
+    leftSide.value = Example;
+  }
+}
+// initial call
+onchangeLeft(leftSide.value);
 
 function radioHandler(val) {
   if (val === 'json') {
-    const json = leftSide.innerHTML.replace(/""/g, '"');
-    leftSide.innerHTML = json;
+    const json = leftSide.value.replace(/""/g, '"');
+    leftSide.value = json;
   } else if (val === 'json-like') {
-    const jsonLike = leftSide.innerHTML.replace(/"/g, '""');
-    leftSide.innerHTML = jsonLike;
+    const jsonLike = leftSide.value.replace(/"/g, '""');
+    leftSide.value = jsonLike;
   }
 }
 
 let rightSide = document.querySelector('#rightSide');
 
 function makeUl() {
-  let string = leftSide.innerHTML.replace(/""/g, '"');
+  let string = leftSide.value.replace(/""/g, '"');
   let parse = JSON.parse(string);
 
-  console.log(parse);
-
+  // console.log(parse);
 
   let ul = document.createElement('ul');
   function innerFn(parse) {
@@ -50,7 +57,7 @@ function makeUl() {
         li.setAttribute("contentEditable", true);
 
         if (typeof parse[key] === 'object') {
-          li.innerHTML = `<strong>${key}</strong> ${Object.keys(parse[key]).length}`;
+          li.innerHTML = `<strong>${key}</strong>`;
           let innerUl = document.createElement('ul');
 
           // 반복되는 부분 함수로 리팩토링 필요!
@@ -58,7 +65,7 @@ function makeUl() {
             let innerLi = document.createElement('li');
 
             if (typeof parse[key][k] === 'object') {
-              innerLi.innerHTML = `<strong>${k}</strong> ${Object.keys(parse[key][k]).length}`
+              innerLi.innerHTML = `<strong>${k}</strong>`
               let innerUl2 = document.createElement('ul');
 
               for (let k2 in parse[key][k]) {
@@ -89,4 +96,40 @@ function makeUl() {
 
   rightSide.innerHTML = '';
   rightSide.appendChild(ul);
+}
+
+function editJson(ul, item, key) {
+  if (!ul) ul = document.querySelector('ul');
+  if (!item) item = {};
+
+  let ulArr = [...ul.children];
+
+  var obj = {};
+  ulArr.map((current, i) => {
+    if (current.innerHTML.includes('<ul>')) {
+      var newItem = {};
+      let key = current.children[0].innerText;
+      editJson(current.children[1], newItem, key);
+      obj[key] = newItem[key];
+    } else {
+      // child 없을 때 오류 방지
+      if (current.childElementCount > 1) {
+        let key = current.children[0].innerText;
+        let value = current.children[1].innerText;
+        obj[key] = value;
+      }
+    }
+  })
+
+  item[key] = obj;
+
+  // json-like 형식으로 변환
+  let string = JSON.stringify(obj, null, '  ');
+  let radio = document.querySelector('#json-like');
+  if (radio.checked) {
+    const jsonLike = string.replace(/"/g, '""');
+    leftSide.value = jsonLike;
+  } else {
+    leftSide.value = string;
+  }
 }
