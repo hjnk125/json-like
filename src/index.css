@@ -16,7 +16,7 @@ body {
 }
   
 .half-container {
-  width: 45%;
+  width: 44%;
   height: 90vh;
 }
   
@@ -41,6 +41,7 @@ body {
   border-radius: 2px;
   background-color: #fff;
   padding: 5px 20px 5px 0;
+  overflow: auto;
 }
 
 ul {
